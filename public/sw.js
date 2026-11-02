@@ -1,6 +1,8 @@
 /* SAWAAL service worker: app-shell caching for offline use. */
-const VERSION = "sawaal-v1";
-const SHELL = ["/", "/explore", "/journey", "/decide", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
+const VERSION = "sawaal-v2";
+/* The worker may be served under a sub-path (e.g. GitHub Pages); derive every URL from its scope. */
+const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, "");
+const SHELL = ["/", "/explore/", "/journey/", "/decide/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"].map((p) => BASE + p);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -27,7 +29,7 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
 
   // Hashed build assets and fonts: cache first.
-  if (url.pathname.startsWith("/_next/static/") || url.pathname.match(/\.(png|svg|woff2?)$/)) {
+  if (url.pathname.startsWith(BASE + "/_next/static/") || url.pathname.match(/\.(png|svg|woff2?)$/)) {
     event.respondWith(
       caches.match(req).then(
         (hit) =>
@@ -51,7 +53,7 @@ self.addEventListener("fetch", (event) => {
           caches.open(VERSION).then((c) => c.put(req, copy));
           return res;
         })
-        .catch(() => caches.match(req).then((hit) => hit || caches.match("/"))),
+        .catch(() => caches.match(req).then((hit) => hit || caches.match(BASE + "/"))),
     );
     return;
   }

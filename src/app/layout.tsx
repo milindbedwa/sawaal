@@ -11,13 +11,15 @@ const rasa = Rasa({ variable: "--font-rasa", weight: ["400", "500"], subsets: ["
 const notoHi = Noto_Sans_Devanagari({ variable: "--font-noto-hi", weight: ["400", "500", "600"], subsets: ["devanagari"], display: "swap" });
 const notoGu = Noto_Sans_Gujarati({ variable: "--font-noto-gu", weight: ["400", "500", "600"], subsets: ["gujarati"], display: "swap" });
 
+const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 export const metadata: Metadata = {
   title: { default: "SAWAAL", template: "%s · SAWAAL" },
   description: "Think. Question. Understand. One question a day to sharpen how you see the world.",
   applicationName: "SAWAAL",
-  manifest: "/manifest.webmanifest",
+  manifest: `${base}/manifest.webmanifest`,
   appleWebApp: { capable: true, statusBarStyle: "default", title: "SAWAAL" },
-  icons: { icon: "/icon-192.png", apple: "/apple-icon.png" },
+  icons: { icon: `${base}/icon-192.png`, apple: `${base}/apple-icon.png` },
   openGraph: { title: "SAWAAL", description: "A question can change how you see the world.", type: "website" },
 };
 
