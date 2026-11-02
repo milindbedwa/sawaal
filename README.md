@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SAWAAL — Think. Question. Understand.
 
-## Getting Started
+A mobile-first, offline-capable learning experience for India: one question a day, playable stories, truth-detective investigations and a city-budget simulation. It teaches *how* to think — evidence, rights, dignity, manipulation — without pushing parties, ideologies or religious positions.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No accounts, no backend. Progress is stored in `localStorage` on the device.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## What's inside
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Experience | Route | Content |
+| --- | --- | --- |
+| **Today** — one question a day | `/`, `/today/[slug]` | 16 daily questions (`src/content/daily/`) across science, misinformation, equality, rights, stereotypes, social media, scams, civic life, democracy, health |
+| **Explore** — playable stories | `/explore`, `/story/[slug]` | 3 branching stories (`src/content/stories/`): The Equality Question, The Viral Message, The Public Office |
+| **Investigate** — truth detective | `/investigate/[slug]` | 2 investigations (`src/content/investigations/`): tap clues in an advert or post, then set an honest confidence level |
+| **Decide** — Run Your City | `/decide` | Allocate a hypothetical ₹100 crore budget; a living city responds; residents disagree |
+| **My Journey** | `/journey` | Questions, stories, topics, milestones, what to explore next. No streaks, no leaderboards |
 
-## Learn More
+Every lesson follows **SEE → CHOOSE → DISCOVER → REFLECT** and ends with one memorable sentence plus a "See evidence" sheet (claim kind, real sources, review date, report-an-inaccuracy).
 
-To learn more about Next.js, take a look at the following resources:
+## Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js 16 (App Router) + TypeScript + Tailwind v4 + Motion.** Two route groups: `(tabs)` with the shell navigation, `(play)` for immersive lessons.
+- **Content is data.** All lessons are typed objects (`src/content/types.ts`). Components render them: `SceneView` (chat, poster, headline, street, phone, notice), `Choices` (cards, chat chips, confidence slider), `Discover`, `Insight`, `EvidenceSheet`, `Completion`, `LessonFrame`.
+- **Languages:** English, Hindi, Gujarati. UI strings in `src/lib/i18n/ui.ts`; content strings are `{ en, hi, gu }` objects with English fallback. To add a language: add it to `LOCALES` in `src/lib/i18n/locales.ts`, add a font in `src/app/layout.tsx` + `globals.css`, and add strings.
+- **Progress:** `src/lib/progress.ts` — a versioned local document shaped so a future Supabase sync can upsert it.
+- **PWA:** `src/app/manifest.ts` + `public/sw.js` (app-shell caching, registered in production only).
+- **Accessibility:** keyboard-operable choices and sliders, focus rings, `aria-live` feedback, native `<dialog>` for the evidence sheet, reduced-motion support, read-aloud via the browser's speech synthesis.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Content standards
 
-## Deploy on Vercel
+See `src/content/README.md`. In short: fictional scenarios, real sources; no invented studies, numbers or legal provisions; claim kinds (`fact`, `hypothesis`, `opinion`, `fiction`) and a `reviewedOn` date on every lesson; AI-assisted drafts are not treated as verified until reviewed by a human against the primary source.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Adding a daily question
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Copy `src/content/daily/q01-bracelet.ts`, give it a new `id` and `slug`.
+2. Write `en`, `hi`, `gu` for every string. Max 3 choices. One-sentence insight.
+3. Register it in `src/content/daily/index.ts`. The route and Journey pick it up automatically.

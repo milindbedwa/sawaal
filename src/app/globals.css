@@ -1,26 +1,280 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------ */
+/*  SAWAAL design tokens                                               */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  --color-paper: #f5f3ee;
+  --color-paper-2: #ebe8e0;
+  --color-paper-3: #e0dcd2;
+  --color-ink: #17191c;
+  --color-ink-2: #2f3237;
+  --color-ink-3: #5c6067;
+  --color-ink-4: #8b8f96;
+  --color-line: #d9d5cc;
+  --color-cobalt: #345cff;
+  --color-cobalt-deep: #2546cc;
+  --color-cobalt-soft: #e3e9ff;
+  --color-mint: #1fa97a;
+  --color-mint-soft: #d9f3e8;
+  --color-amber: #f2a33a;
+  --color-amber-soft: #fbe9cf;
+  --color-rose: #e4536a;
+  --color-rose-soft: #fadde2;
+  --color-plum: #6b3fa0;
+  --color-plum-soft: #e9dff5;
+
+  --font-display: var(--font-instrument), var(--font-tiro-hi), var(--font-rasa), Georgia, serif;
+  --font-sans: var(--font-geist), var(--font-noto-hi), var(--font-noto-gu), system-ui, sans-serif;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  --shadow-soft: 0 1px 2px rgb(23 25 28 / 0.04), 0 8px 24px -12px rgb(23 25 28 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(23 25 28 / 0.06), 0 18px 40px -16px rgb(23 25 28 / 0.28);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Per-language font stacks. The display face changes with the script. */
+:root,
+[data-lang="en"] {
+  --font-display-active: var(--font-instrument), Georgia, serif;
+  --font-sans-active: var(--font-geist), system-ui, sans-serif;
+  --display-tracking: -0.02em;
+  --display-leading: 0.98;
+  --display-leading-text: 1.12;
+}
+[data-lang="hi"] {
+  --font-display-active: var(--font-tiro-hi), var(--font-noto-hi), serif;
+  --font-sans-active: var(--font-noto-hi), var(--font-geist), system-ui, sans-serif;
+  --display-tracking: 0;
+  --display-leading: 1.22;
+  --display-leading-text: 1.32;
+}
+[data-lang="gu"] {
+  --font-display-active: var(--font-rasa), var(--font-noto-gu), serif;
+  --font-sans-active: var(--font-noto-gu), var(--font-geist), system-ui, sans-serif;
+  --display-tracking: 0;
+  --display-leading: 1.22;
+  --display-leading-text: 1.32;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans-active);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    min-height: 100dvh;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+  ::selection {
+    background: var(--color-cobalt);
+    color: white;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-cobalt);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Respect reduced motion globally for CSS animations */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .font-display {
+    font-family: var(--font-display-active);
+    letter-spacing: var(--display-tracking);
+    line-height: var(--display-leading);
+    font-weight: 400;
+  }
+  .font-ui {
+    font-family: var(--font-sans-active);
+  }
+  /* Big editorial headline sizes */
+  .t-hero {
+    font-size: clamp(2.75rem, 11vw, 6rem);
+  }
+  .t-display {
+    font-size: clamp(2rem, 7.5vw, 3.75rem);
+  }
+  .t-title {
+    font-size: clamp(1.625rem, 5.5vw, 2.5rem);
+  }
+  /* Display face used for a sentence or two, not a headline */
+  .t-display-text {
+    line-height: var(--display-leading-text);
+  }
+  .t-lead {
+    font-size: clamp(1.125rem, 4.2vw, 1.375rem);
+    line-height: 1.4;
+  }
+  .t-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-ink-3);
+  }
+  [data-lang="hi"] .t-eyebrow,
+  [data-lang="gu"] .t-eyebrow {
+    letter-spacing: 0.04em;
+    text-transform: none;
+    font-size: 0.8125rem;
+  }
+
+  /* The page column */
+  .page {
+    width: 100%;
+    max-width: 44rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .page {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Tactile primary button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    line-height: 1.2;
+    transition:
+      transform 0.18s var(--ease-out-expo),
+      background-color 0.18s,
+      color 0.18s,
+      box-shadow 0.18s;
+    will-change: transform;
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-primary {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    box-shadow: var(--shadow-soft);
+  }
+  .btn-primary:hover {
+    background: var(--color-cobalt);
+  }
+  .btn-cobalt {
+    background: var(--color-cobalt);
+    color: white;
+    box-shadow: var(--shadow-soft);
+  }
+  .btn-cobalt:hover {
+    background: var(--color-cobalt-deep);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1.5px var(--color-line);
+  }
+  .btn-ghost:hover {
+    box-shadow: inset 0 0 0 1.5px var(--color-ink);
+  }
+  .btn-quiet {
+    background: transparent;
+    color: var(--color-ink-3);
+    min-height: 2.75rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.9375rem;
+  }
+  .btn-quiet:hover {
+    color: var(--color-ink);
+    background: var(--color-paper-2);
+  }
+
+  /* Hairline */
+  .rule {
+    height: 1px;
+    background: var(--color-line);
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Paper grain: a very subtle texture made of CSS only */
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+    background-image: radial-gradient(rgb(23 25 28 / 0.045) 0.6px, transparent 0.6px);
+    background-size: 3px 3px;
+  }
+
+  /* Safe-area padding helpers */
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+@utility text-pretty {
+  text-wrap: pretty;
 }
